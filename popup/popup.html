@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Auto Ad Skipper</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="../icons/icon48.png" alt="" width="24" height="24">
+    <h1>Auto Ad Skipper</h1>
+    <label class="switch" title="Включить/выключить везде">
+      <input type="checkbox" id="enabled">
+      <span class="slider"></span>
+    </label>
+  </header>
+
+  <section class="site-row" id="siteRow" hidden>
+    <div class="site-info">
+      <span class="site-label">Этот сайт</span>
+      <span class="site-host" id="siteHost"></span>
+    </div>
+    <label class="switch" title="Включить/выключить на этом сайте">
+      <input type="checkbox" id="siteEnabled">
+      <span class="slider"></span>
+    </label>
+  </section>
+
+  <section class="stats">
+    <div class="stat">
+      <span class="stat-num" id="tabCount">0</span>
+      <span class="stat-label">на вкладке</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num" id="totalCount">0</span>
+      <span class="stat-label">всего пропущено</span>
+    </div>
+  </section>
+
+  <details class="advanced">
+    <summary>Экспериментально</summary>
+    <label class="opt">
+      <input type="checkbox" id="fastForward">
+      <span>Проматывать рекламный ролик в конец <small>(может глючить на некоторых плеерах)</small></span>
+    </label>
+    <label class="opt">
+      <input type="checkbox" id="popunderGuard">
+      <span>Блокировать попандеры при автоклике</span>
+    </label>
+    <label class="opt opt-select">
+      <span>Заглушение рекламы</span>
+      <select id="muteMode">
+        <option value="tab+video">Вкладка + видео (надёжно)</option>
+        <option value="video">Только видео в плеере</option>
+        <option value="off">Не заглушать</option>
+      </select>
+    </label>
+    <label class="opt">
+      <input type="checkbox" id="debug">
+      <span>Отладочные логи в консоли</span>
+    </label>
+  </details>
+
+  <footer>Реклама глушится с первой секунды, «Пропустить» нажимается автоматически.</footer>
+
+  <script src="../common.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
