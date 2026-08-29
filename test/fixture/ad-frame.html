@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>AAS fixture — ad frame</title>
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; background: #000; overflow: hidden; }
+    #player { position: relative; width: 640px; height: 360px; }
+    video { width: 100%; height: 100%; object-fit: cover; }
+
+    .videoAdUi {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .videoAdUi[hidden] { display: none; }
+
+    #badge {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      background: rgba(0,0,0,.7);
+      color: #ffcf40;
+      padding: 4px 10px;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+
+    .videoAdUiSkipButton,
+    #skip2 {
+      position: absolute;
+      right: 16px;
+      bottom: 24px;
+      pointer-events: auto;
+      background: rgba(20,20,20,.9);
+      color: #fff;
+      border: 1px solid #888;
+      border-radius: 4px;
+      padding: 10px 16px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    #skip2.waiting { color: #aaa; cursor: default; }
+  </style>
+</head>
+<body>
+  <div id="player">
+    <video id="v" playsinline></video>
+    <div id="adui" class="videoAdUi" hidden>
+      <span id="badge">Реклама</span>
+    </div>
+  </div>
+  <script src="fixture.js"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>AAS fixture — top page</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 16px; }
+    iframe { border: 2px solid #444; display: block; margin: 12px 0; }
+    video { background: #000; display: block; margin: 12px 0; }
+    section { margin-top: 16px; padding: 12px; border: 1px dashed #999; }
+  </style>
+</head>
+<body>
+  <h1>Плеер (фикстура)</h1>
+
+  <!-- Simulated embedded player, cross-origin via the 127.0.0.1/localhost trick -->
+  <iframe id="adframe" width="640" height="360" allow="autoplay"></iframe>
+
+  <!-- Top-page "content" video: must NEVER be muted by the extension -->
+  <video id="content" width="320" height="180" playsinline></video>
+
+  <!-- Decoys: the extension must never click these or react to them -->
+  <section>
+    <p>Декои (не должны кликаться расширением):</p>
+    <button id="decoySkipIntro">Пропустить заставку</button>
+    <form onsubmit="return false">
+      <button id="decoySkip" type="button">Skip</button>
+    </form>
+  </section>
+
+  <script>
+    const D = document.documentElement.dataset;
+    D.decoyClicks = '0';
+    D.topMuted = '0';
+
+    const frame = document.getElementById('adframe');
+    // Same server, different hostname => different origin for the iframe.
+    frame.src = 'http://127.0.0.1:' + location.port + '/ad-frame.html';
+
+    for (const id of ['decoySkipIntro', 'decoySkip']) {
+      document.getElementById(id).addEventListener('click', () => {
+        D.decoyClicks = String(1 + Number(D.decoyClicks));
+      });
+    }
+
+    // Content video from a canvas stream — no media files needed.
+    const v = document.getElementById('content');
+    const canvas = document.createElement('canvas');
+    canvas.width = 320; canvas.height = 180;
+    const ctx = canvas.getContext('2d');
+    (function draw() {
+      ctx.fillStyle = '#123';
+      ctx.fillRect(0, 0, 320, 180);
+      ctx.fillStyle = '#8cf';
+      ctx.font = '20px sans-serif';
+      ctx.fillText('контент ' + (Date.now() % 100000), 20, 90);
+      requestAnimationFrame(draw);
+    })();
+    v.srcObject = canvas.captureStream(15);
+    v.muted = false;
+    v.play().catch(() => {});
+
+    setInterval(() => { if (v.muted) D.topMuted = '1'; }, 100);
+
+    // Mirror the ad-frame's progress into top-level data attributes so the
+    // e2e runner can read everything from one document.
+    window.addEventListener('message', (e) => {
+      const f = e.data && e.data.__aasFixture;
+      if (!f) return;
+      for (const k of Object.keys(f)) D[k] = String(f[k]);
+    });
+  </script>
+</body>
+</html>
